@@ -1,0 +1,33 @@
+stages:
+  - build
+  - test
+  - deploy
+variables:
+  DEPLOY_DIR: "public"
+build_job:
+  stage: build 
+  script:
+    - echo "Building project"
+    - mkdir $DEPLOY_DIR
+    - cp index.html $DEPLOY_DIR/
+  artifacts:
+    paths:
+      - $DEPLOY_DIR
+  only:
+    - main
+test_job:
+  stage: test 
+  script:
+    - echo "Testing the job"
+    - grep -q "integration of gitlab with cicd" index.html && echo "Test passed!" || (echo "Test failed!" && exit 1)  
+  only:
+    - main
+deploy_job:
+  stage: deploy
+  script:
+    - echo "deploying the project"
+  artifacts:
+    paths:
+      - $DEPLOY_DIR 
+  only:
+    - main  
